@@ -1,13 +1,16 @@
-//use std::collections::HashMap;
+extern crate websocket;
+use websocket::client::sync::Client;
+use websocket::stream::sync::TcpStream;
+use websocket::stream::Stream;
 
-pub struct ChatServer {
+pub struct ChatServer<S> where S: Stream {
         //existing_users: &[String]
-        pub my_users: Vec<String>
+        pub my_users: Vec<Client<S>>
 }
 
-impl ChatServer {
-    pub fn add_user(&mut self, username: String) {
-        println!("Adding user {}", username);    
-        self.my_users.push(username);
+impl ChatServer<TcpStream> {
+    pub fn add_client(&mut self, client: Client<TcpStream>) {
+        self.my_users.push(client);
+        println!("{}", self.my_users.len());
     }
 }
