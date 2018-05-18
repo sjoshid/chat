@@ -19,6 +19,7 @@ fn main() {
 
         let mut client = request.use_protocol("rust-websocket").accept().unwrap();
         chat_server.add_client(client);
+        chat_server.send_message_to_last();
     }
 }
 
