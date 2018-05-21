@@ -59,7 +59,8 @@ fn main() {
         }
 
         let mut client = request.use_protocol("rust-websocket").accept().unwrap();
-        let wc = WrapperClient(client);
+        let wc = &WrapperClient(client);
+        //now do a deref here
 
     }
 }
