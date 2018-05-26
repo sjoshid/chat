@@ -1,14 +1,13 @@
-mod MyServer;
-
 extern crate websocket;
+mod MyServer;
+mod client;
 
-use std::thread;
-use websocket::OwnedMessage;
 use websocket::sync::Server;
+
 
 fn main() {
     let server = Server::bind("127.0.0.1:2794").unwrap();
-    let mut chat_server = MyServer::ChatServer{my_users: Vec::new()};
+    //let mut chat_server = MyServer::ChatServer{my_users: Vec::new()};
 
     for request in server.filter_map(Result::ok) {
 
@@ -17,16 +16,7 @@ fn main() {
             return;
         }
 
-        let mut client = request.use_protocol("rust-websocket").accept().unwrap();
-        chat_server.add_client(client);
-        chat_server.send_message_to_last();
+        let mut c = request.use_protocol("rust-websocket").accept().unwrap();
+        let wc2 = client::WrapperClient::new(String::from("Sujit"), c);
     }
 }
-
-
-// fn main() {
-//     // let mut users = MyServer::ChatServer{my_users: vec![String::from("")]};
-//     let mut users = MyServer::ChatServer{my_users: Vec::new()};
-//     users.add_user(String::from("Morgan"));
-//     println!("First user is {}", users.my_users[0]);
-// }

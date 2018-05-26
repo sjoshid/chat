@@ -1,6 +1,5 @@
 extern crate websocket;
 use websocket::client::sync::Client;
-use websocket::stream::sync::TcpStream;
 use websocket::stream::Stream;
 use websocket::stream::sync::AsTcpStream;
 use websocket::OwnedMessage;
