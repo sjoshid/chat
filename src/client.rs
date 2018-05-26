@@ -10,7 +10,7 @@ pub struct WrapperClient {
 }
 
 impl WrapperClient {
-    pub fn new(username: String, c: Client<TcpStream>) -> WrapperClient {
+    pub fn new(username: String, c: WsClient) -> WrapperClient {
         WrapperClient {username, c}
     }
 

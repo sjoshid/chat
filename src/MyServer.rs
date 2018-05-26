@@ -5,7 +5,6 @@ use websocket::stream::sync::AsTcpStream;
 use websocket::OwnedMessage;
 
 pub struct ChatServer<S> where S: AsTcpStream + Stream {
-        //existing_users: &[String]
         pub my_users: Vec<Client<S>>
 }
 
