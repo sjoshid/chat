@@ -14,7 +14,7 @@ impl WrapperClient {
         WrapperClient {username, c}
     }
 
-    fn get_username(&self) -> &str {
+    pub fn get_username(&self) -> &str {
         &self.username
     }
 }

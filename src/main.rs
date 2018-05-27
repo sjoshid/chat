@@ -1,13 +1,14 @@
 extern crate websocket;
-mod MyServer;
+mod server;
 mod client;
 
 use websocket::sync::Server;
+use std::collections::HashMap;
 
 
 fn main() {
     let server = Server::bind("127.0.0.1:2794").unwrap();
-    //let mut chat_server = MyServer::ChatServer{my_users: Vec::new()};
+    let mut clients = server::ChatServer{clients: HashMap::new()};
 
     for request in server.filter_map(Result::ok) {
 
@@ -18,5 +19,6 @@ fn main() {
 
         let mut c = request.use_protocol("rust-websocket").accept().unwrap();
         let wc2 = client::WrapperClient::new(String::from("Sujit"), c);
+        clients.add_client(wc2);
     }
 }
