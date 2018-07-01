@@ -1,4 +1,5 @@
 extern crate websocket;
+
 use websocket::client::sync::Client;
 use websocket::stream::sync::TcpStream;
 
@@ -6,12 +7,12 @@ pub type WsClient = Client<TcpStream>;
 
 pub struct WrapperClient {
     username: String,
-    c: WsClient
+    c: WsClient,
 }
 
 impl WrapperClient {
     pub fn new(username: String, c: WsClient) -> WrapperClient {
-        WrapperClient {username, c}
+        WrapperClient { username, c }
     }
 
     pub fn get_username(&self) -> &str {
@@ -19,7 +20,7 @@ impl WrapperClient {
     }
 }
 
-impl PartialEq for WrapperClient{
+impl PartialEq for WrapperClient {
     fn eq(&self, other: &WrapperClient) -> bool {
         let s = self.get_username();
         let o = other.get_username();
@@ -27,4 +28,5 @@ impl PartialEq for WrapperClient{
         s == o
     }
 }
-impl Eq for WrapperClient{}
+
+impl Eq for WrapperClient {}

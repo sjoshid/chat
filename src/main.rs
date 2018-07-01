@@ -1,6 +1,6 @@
 extern crate websocket;
-mod server;
-mod client;
+mod incomplete_server;
+mod common;
 
 use websocket::sync::Server;
 use std::collections::HashMap;
@@ -8,7 +8,7 @@ use websocket::header::Cookie;
 
 fn main() {
     let server = Server::bind("127.0.0.1:2794").unwrap();
-    let mut clients = server::ChatServer{clients: HashMap::new()};
+    let mut clients = incomplete_server::ChatServer{clients: HashMap::new()};
 
     for ws_upgrade in server.filter_map(Result::ok) {
 
@@ -34,7 +34,7 @@ fn main() {
             user_id = id.split('=').collect::<Vec<&str>>().get(1).unwrap().to_string();
         }
         print!("User id is {}", user_id);
-        let wc2 = client::WrapperClient::new(user_id, c);
+        let wc2 = common::WrapperClient::new(user_id, c);
         clients.add_client(wc2);
     }
 }
