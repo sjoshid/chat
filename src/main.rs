@@ -8,7 +8,7 @@ use websocket::header::Cookie;
 
 fn main() {
     let server = Server::bind("127.0.0.1:2794").unwrap();
-    let mut clients = incomplete_server::ChatServer{clients: HashMap::new()};
+    let mut sync_server = incomplete_server::ChatServer{clients: HashMap::new()};
 
     for ws_upgrade in server.filter_map(Result::ok) {
 
@@ -35,6 +35,12 @@ fn main() {
         }
         print!("User id is {}", user_id);
         let wc2 = common::WrapperClient::new(user_id, c);
-        clients.add_client(wc2);
+        sync_server.add_client(wc2);
+
+        let (mut receiver, mut sender) = c.split().unwrap();
+
+        for message in receiver.incoming_messages() {
+            let raw_message_from_client = message.unwrap();
+        }
     }
 }

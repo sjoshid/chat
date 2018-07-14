@@ -13,7 +13,7 @@ mod async {
     }
 
     impl AsyncChatServer {
-        ppub fn init(){
+        pub fn init(){
 
         }
 

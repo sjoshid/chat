@@ -1,5 +1,8 @@
 extern crate websocket;
 
+#[macro_use]
+extern crate serde_derive;
+
 use websocket::client::sync::Client;
 use websocket::stream::sync::TcpStream;
 
@@ -30,3 +33,10 @@ impl PartialEq for WrapperClient {
 }
 
 impl Eq for WrapperClient {}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct MessageDetails {
+    pub sender_username: String,
+    pub receiver_username: String,
+    pub message: String
+}
