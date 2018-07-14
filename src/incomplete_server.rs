@@ -9,6 +9,7 @@ use websocket::stream::Stream;
 use websocket::stream::sync::AsTcpStream;
 use websocket::OwnedMessage;
 use std::collections::HashMap;
+use websocket::ws::dataframe::DataFrame;
 
 pub struct ChatServer {
     pub clients: HashMap<String, common::WrapperClient>
@@ -20,8 +21,8 @@ impl ChatServer {
     }
 
     pub fn send_message(&mut self, message_from_sender: OwnedMessage) {
-        let mfs = message_from_sender.unwrap();
-        let incoming_message_details: common::MessageDetails = serde_json::from_str(mfs).unwrap(); //<-- deserialize
+        let mfs = String::from_utf8(message_from_sender.take_payload()).unwrap();
+        let incoming_message_details: common::MessageDetails = serde_json::from_str(&mfs).unwrap(); //<-- deserialize
 
         let receiver_username = incoming_message_details.receiver_username;
 

@@ -1,7 +1,6 @@
-extern crate websocket;
-
 #[macro_use]
 extern crate serde_derive;
+extern crate websocket;
 
 use websocket::client::sync::Client;
 use websocket::stream::sync::TcpStream;
