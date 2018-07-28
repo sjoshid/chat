@@ -7,13 +7,13 @@ use websocket::stream::sync::TcpStream;
 
 pub type WsWriter = Writer<TcpStream>;
 
-pub struct WrapperSender<'a> {
+pub struct WrapperSender {
     username: String,
-    sender: &'a mut WsWriter,
+    sender: WsWriter,
 }
 
-impl<'a> WrapperSender<'a> {
-    pub fn new(username: String, sender: &'a mut WsWriter) -> WrapperSender<'a> {
+impl WrapperSender {
+    pub fn new(username: String, sender: WsWriter) -> WrapperSender {
         WrapperSender { username, sender}
     }
     pub fn get_username(&self) -> &str {
@@ -21,16 +21,16 @@ impl<'a> WrapperSender<'a> {
     }
 }
 
-impl <'a> Deref for WrapperSender<'a> {
+impl  Deref for WrapperSender {
 
     type Target = WsWriter;
 
     fn deref(&self) -> &WsWriter {
-        self.sender
+        &self.sender
     }
 }
 
-impl <'a> PartialEq for WrapperSender<'a> {
+impl  PartialEq for WrapperSender {
     fn eq(&self, other: &WrapperSender) -> bool {
         let s = self.get_username();
         let o = other.get_username();
@@ -39,7 +39,7 @@ impl <'a> PartialEq for WrapperSender<'a> {
     }
 }
 
-impl <'a> Eq for WrapperSender<'a> {}
+impl  Eq for WrapperSender {}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MessageDetails {

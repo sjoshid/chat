@@ -5,18 +5,19 @@ extern crate serde_json;
 use common;
 
 use websocket::client::sync::Client;
-use websocket::stream::Stream;
-use websocket::stream::sync::AsTcpStream;
 use websocket::OwnedMessage;
 use std::collections::HashMap;
 use websocket::ws::dataframe::DataFrame;
+use websocket::sender::Writer;
+use websocket::sender::Sender;
+//use websocket::ws::Sender;
 
-pub struct ChatServer<'a> {
-    pub clients: HashMap<String, common::WrapperSender<'a>>
+pub struct ChatServer {
+    pub clients: HashMap<String, common::WrapperSender>
 }
 
-impl <'a> ChatServer<'a> {
-    pub fn add_client(&mut self, client: common::WrapperSender<'a>) {
+impl ChatServer {
+    pub fn add_client(&mut self, client: common::WrapperSender) {
         self.clients.insert(client.get_username().to_string(), client);
     }
 
@@ -28,13 +29,14 @@ impl <'a> ChatServer<'a> {
 
         match self.clients.get(&receiver_username) {
             Some(receiver) => {
-                let outgoing_message_details = common::MessageDetails{sender_username: String::from(""), receiver_username: String::from(""), message: incoming_message_details.message};
+                let outgoing_message_details = common::MessageDetails { sender_username: String::from(""), receiver_username: String::from(""), message: incoming_message_details.message };
 
                 let serialized_outgoing_message = serde_json::to_string(&outgoing_message_details).unwrap();
                 //sj_todo why do I need double **? WrapperSender already implements trait Deref.
-                let recv = &**receiver;
-                //recv.send_message(&OwnedMessage::Text(serialized_outgoing_message)).unwrap();
-            },
+                /*let mut recv = &**receiver;*/
+                let mut recv = (*receiver).sender;
+                recv.send_message(&OwnedMessage::Text(serialized_outgoing_message)).unwrap();
+            }
             None => println!("Error because username not found in hashmap of server.")
         }
     }

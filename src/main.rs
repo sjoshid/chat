@@ -48,7 +48,7 @@ fn main() {
         }
         print!("User id is {}", user_id);
 
-        let wc2 = common::WrapperSender::new(user_id, &mut sender);
+        let wc2 = common::WrapperSender::new(user_id, sender);
         sync_server.add_client(wc2);
 
         for message in receiver.incoming_messages() {
