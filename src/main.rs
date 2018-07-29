@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate serde_derive;
 extern crate websocket;
+
 mod incomplete_server;
 mod common;
 
@@ -13,9 +14,9 @@ use std::io::Write;
 fn main() {
     let server = Server::bind("127.0.0.1:2794").unwrap();
 
-    let mut first_request = true;
+    //let mut first_request = true;
+    let mut sync_server = incomplete_server::ChatServer { clients: HashMap::new() };
     for incoming_request in server.filter_map(Result::ok) {
-
         if !incoming_request.protocols().contains(&"rust-websocket".to_string()) {
             incoming_request.reject().unwrap();
             return;
@@ -24,13 +25,6 @@ fn main() {
         let h = incoming_request.request.headers.clone();
         let c = incoming_request.use_protocol("rust-websocket").accept().unwrap();
         let (mut receiver, mut sender) = c.split().unwrap();
-
-        let mut sync_server = incomplete_server::ChatServer{clients: HashMap::new()};
-
-        if first_request {
-            sync_server = incomplete_server::ChatServer{clients: HashMap::new()};
-            first_request = false;
-        }
 
         let user_id: String;
         {
@@ -54,7 +48,5 @@ fn main() {
         for message in receiver.incoming_messages() {
             let raw_message_from_client = message.unwrap();
         }
-
     }
-
 }

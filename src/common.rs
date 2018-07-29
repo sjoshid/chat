@@ -1,6 +1,6 @@
 extern crate websocket;
 
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 use websocket::sender::Writer;
 use websocket::client::sync::Client;
 use websocket::stream::sync::TcpStream;
@@ -8,25 +8,29 @@ use websocket::stream::sync::TcpStream;
 pub type WsWriter = Writer<TcpStream>;
 
 pub struct WrapperSender {
-    username: String,
-    sender: WsWriter,
+    pub username: String,
+    pub src: WsWriter,
 }
 
 impl WrapperSender {
-    pub fn new(username: String, sender: WsWriter) -> WrapperSender {
-        WrapperSender { username, sender}
+    pub fn new(username: String, mut sender: WsWriter) -> WrapperSender {
+        WrapperSender { username, src: sender }
     }
     pub fn get_username(&self) -> &str {
         &self.username
     }
 }
 
-impl  Deref for WrapperSender {
-
+impl Deref for WrapperSender {
     type Target = WsWriter;
-
     fn deref(&self) -> &WsWriter {
-        &self.sender
+        &self.src
+    }
+}
+
+impl DerefMut for WrapperSender {
+    fn deref_mut(&mut self) -> &mut WsWriter {
+        &mut self.src
     }
 }
 
