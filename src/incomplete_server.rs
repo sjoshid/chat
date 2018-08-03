@@ -14,6 +14,7 @@ pub struct ChatServer {
 
 impl ChatServer {
     pub fn add_client(&mut self, client: common::WrapperSender) {
+        println!("Adding {} to server", client.get_username());
         self.clients.insert(client.get_username().to_string(), client);
     }
 

@@ -40,13 +40,14 @@ fn main() {
             let id = v[0].clone();
             user_id = id.split('=').collect::<Vec<&str>>().get(1).unwrap().to_string();
         }
-        print!("User id is {}", user_id);
 
         let wc2 = common::WrapperSender::new(user_id, sender);
         sync_server.add_client(wc2);
 
         for message in receiver.incoming_messages() {
-            let raw_message_from_client = message.unwrap();
+            //println!("received");
+            eprintln!("Received {:?} ", message.unwrap());
+            //let raw_message_from_client = message.unwrap();
         }
     }
 }
