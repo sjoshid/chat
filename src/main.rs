@@ -2,9 +2,11 @@
 extern crate serde_derive;
 extern crate websocket;
 
-mod incomplete_server;
+mod sync;
 mod common;
 
+use sync::server::ChatServer;
+use common::WrapperSender;
 use websocket::sync::Server;
 use std::collections::HashMap;
 use websocket::header::Cookie;
@@ -15,7 +17,7 @@ fn main() {
     let server = Server::bind("127.0.0.1:2794").unwrap();
 
     //let mut first_request = true;
-    let mut sync_server = incomplete_server::ChatServer { clients: HashMap::new() };
+    let mut sync_server = ChatServer { clients: HashMap::new() };
     for incoming_request in server.filter_map(Result::ok) {
         if !incoming_request.protocols().contains(&"rust-websocket".to_string()) {
             incoming_request.reject().unwrap();
@@ -41,7 +43,7 @@ fn main() {
             user_id = id.split('=').collect::<Vec<&str>>().get(1).unwrap().to_string();
         }
 
-        let wc2 = common::WrapperSender::new(user_id, sender);
+        let wc2 = WrapperSender::new(user_id, sender);
         sync_server.add_client(wc2);
 
         for message in receiver.incoming_messages() {
