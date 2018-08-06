@@ -30,7 +30,6 @@ fn main() {
             let h = incoming_request.request.headers.clone();
             let c = incoming_request.use_protocol("rust-websocket").accept().unwrap();
             let (mut receiver, mut sender) = c.split().unwrap();
-
             let user_id: String;
             {
                 let cookie: &Cookie = match h.get() {
@@ -43,14 +42,19 @@ fn main() {
                 let id = v[0].clone();
                 user_id = id.split('=').collect::<Vec<&str>>().get(1).unwrap().to_string();
             }
-
             let wc2 = WrapperSender::new(user_id, sender);
-            let mut mg = cloned_sync_server.lock().unwrap();
-            let mut chat_server = &mut *mg;
-            chat_server.add_client(wc2);
+            {
+                let mut mg = cloned_sync_server.lock().unwrap();
+                let mut chat_server = &mut *mg;
+                chat_server.add_client(wc2);
+            }
 
             for message in receiver.incoming_messages() {
-                chat_server.send_message(message.unwrap());
+                {
+                    let mut mg = cloned_sync_server.lock().unwrap();
+                    let mut chat_server = &mut *mg;
+                    chat_server.send_message(message.unwrap());
+                }
             }
         });
     }
